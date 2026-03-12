@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import tacos.TacoOrder;
+import tacos.data.OrderRepository;
 
 @Slf4j
 @Controller
@@ -21,9 +22,14 @@ public class OrderController {
 
     //private static final Logger log = LoggerFactory.getLogger(OrderController.class);
 
+    private OrderRepository orderRepo;
+
+    public OrderController(OrderRepository orderRepo) {
+        this.orderRepo = orderRepo;
+    }
+
     @GetMapping("/current")
     public String orderForm() {
-        //log.info("Showing order form");
         log.info("Showing order form");
         return "orderForm";
     }
@@ -34,6 +40,8 @@ public class OrderController {
         if (errors.hasErrors()){
             return "orderForm";
         }
+
+        orderRepo.save(order);
 
         log.info("Order Submitted: {}", order);
         sessionStatus.setComplete();
